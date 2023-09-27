@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 # Create redirect
-INDEX_COPY="Hello World!"
-sudo apt-get -y update
+
+ADD301_REDIRECT="\\\tlocation /redirect_me {\n\t\t return 301 https://google.com;\n\t}\n"
+
+sudo apt-get update
 sudo apt-get -y install nginx
-echo "$INDEX_COPY" | sudo tee /var/www/html/index.nginx-debian.html > /dev/null
-sudo sed -i '/^\sserver_name.*/a \        rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;' /etc/nginx/sites-available/default
+
+echo "301 Moved Permanently" | sudo tee /var/www/html/index.html
+
+sudo sed -i "30i $ADD301_REDIRECT" /etc/nginx/sites-available/default
 sudo service nginx start
