@@ -2,6 +2,6 @@
 
 eval $("ssh_agent")
 
-ssh-add /alx-system_engineering-devops/pk
+ssh-add alx-system_engineering-devops/pk
 
 ssh ubuntu@54.173.108.172
