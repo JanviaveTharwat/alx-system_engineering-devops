@@ -12,11 +12,6 @@ global
         ca-base /etc/ssl/certs
         crt-base /etc/ssl/private
 
-        # See: https://ssl-config.mozilla.org/#server=haproxy&server-version=2.0.3&config=intermediate
-        ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
-        ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
-        ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
-
 defaults
         log     global
         mode    http
@@ -34,18 +29,12 @@ defaults
         errorfile 504 /etc/haproxy/errors/504.http
 
 frontend  jenny2.janviave-frontend
-        bind *:80
-        mode http
-        bind *:443 ssl crt /etc/haproxy/certs/www.jenny2.janviave.tech.pem
-        redirect scheme https if !{ ssl_fc }
-        default_backend jenny2.janviave-backend
-backend jenny2.janviave-backend
-        balance roundrobin
-	server 384360-web-01 107.22.142.201:80 check
-	server 384360-web-02 35.153.57.148:80 check
+    bind *:443 ssl crt /etc/letsencrypt/line/www.jenny2.janciave.tech/fullchain.pem
+    http_request add-header X-Forwarded-Proto http
+    http_request redirect scheme https if !{ ssl_fc }
+    use_backend http_back
 
-listen http-in
-        bind :80
-        balance roundrobin
-	server 384360-web-01 107.22.142.201:80 check
-	server 384360-web-02 35.153.57.148:80 check
+backend http_back
+    http_request redirect scheme https if !{ ssl_fc }
+        server 384360-web-01 107.22.142.201:80
+        server 384360-web-02 35.153.57.148:80
