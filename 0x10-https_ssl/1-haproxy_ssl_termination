@@ -33,13 +33,13 @@ defaults
         errorfile 503 /etc/haproxy/errors/503.http
         errorfile 504 /etc/haproxy/errors/504.http
 
-frontend  janviave-frontend
+frontend  jenny2.janviave-frontend
         bind *:80
         mode http
         bind *:443 ssl crt /etc/haproxy/certs/www.ollyjhay.tech.pem
         redirect scheme https if !{ ssl_fc }
-        default_backend ollyjhay-backend
-backend janviave-backend
+        default_backend jenny2.janviave-backend
+backend jenny2.janviave-backend
         balance roundrobin
 	server 384360-web-01 107.22.142.201:80 check
 	server 384360-web-02 35.153.57.148:80 check
