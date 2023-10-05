@@ -36,7 +36,7 @@ defaults
 frontend  jenny2.janviave-frontend
         bind *:80
         mode http
-        bind *:443 ssl crt /etc/haproxy/certs/www.ollyjhay.tech.pem
+        bind *:443 ssl crt /etc/haproxy/certs/www.jenny2.janviave.tech.pem
         redirect scheme https if !{ ssl_fc }
         default_backend jenny2.janviave-backend
 backend jenny2.janviave-backend
