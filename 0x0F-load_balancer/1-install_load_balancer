@@ -40,8 +40,8 @@ backend servers
     timeout conect     3000
     timeout server    30000
     balance roundrobin
-    server 384360-web-01 107.22.142.201 check port 80
-    server 384360-web-02 35.153.57.148 check port 80
+    server 384360-web-01 107.22.142.201 check port 8080
+    server 384360-web-02 35.153.57.148 check port 8080
 " >> /etc/haproxy/haproxy.cfg
 
 sudo systemctl restart haproxy.service
