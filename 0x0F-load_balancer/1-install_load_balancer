@@ -44,4 +44,4 @@ backend servers
     server 384360-web-02 384360-web-02:80 check
 " >> /etc/haproxy/haproxy.cfg
 
-service haproxy start
+sudo service haproxy restart
