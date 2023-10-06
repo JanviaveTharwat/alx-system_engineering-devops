@@ -1,40 +1,47 @@
 global
-        log /dev/log    local0
-        log /dev/log    local1 notice
-        chroot /var/lib/haproxy
-        stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
-        stats timeout 30s
-        user haproxy
-        group haproxy
-        daemon
-
-        # Default SSL material locations
-        ca-base /etc/ssl/certs
-        crt-base /etc/ssl/private
+    log     /dev/log local0
+    maxconn 2048
+    user    haproxy
+    group   haproxy
+    tune.ssl.default-dh-param 2048
 
 defaults
-        log     global
-        mode    http
-        option  httplog
-        option  dontlognull
-        timeout connect 5000
-        timeout client  50000
-        timeout server  50000
-        errorfile 400 /etc/haproxy/errors/400.http
-        errorfile 403 /etc/haproxy/errors/403.http
-        errorfile 408 /etc/haproxy/errors/408.http
-        errorfile 500 /etc/haproxy/errors/500.http
-        errorfile 502 /etc/haproxy/errors/502.http
-        errorfile 503 /etc/haproxy/errors/503.http
-        errorfile 504 /etc/haproxy/errors/504.http
+    log     global
+    mode    http
+    option  httplog
+    option  dontlognull
+    retries 3
+    option  redispatch
+    timeout connect  5000
+    timeout client  10000
+    timeout server  10000
+    option  forwardfor
+    option  http-server-close
+    errorfile 400 /etc/haproxy/errors/400.http
+    errorfile 403 /etc/haproxy/errors/403.http
+    errorfile 408 /etc/haproxy/errors/408.http
+    errorfile 500 /etc/haproxy/errors/500.http
+    errorfile 502 /etc/haproxy/errors/502.http
+    errorfile 503 /etc/haproxy/errors/503.http
+    errorfile 504 /etc/haproxy/errors/504.http
 
-frontend  jenny2.janviave-frontend
-    bind *:443 ssl crt /etc/letsencrypt/line/www.jenny2.janciave.tech/fullchain.pem
-    http_request add-header X-Forwarded-Proto http
-    http_request redirect scheme https if !{ ssl_fc }
-    use_backend http_back
+frontend www-http
+    bind   0.0.0.0:80
+    http-request add-header X-Forwared-Proto http
+    default_backend www-backend
 
-backend http_back
-    http_request redirect scheme https if !{ ssl_fc }
-        server 384360-web-01 107.22.142.201:80
-        server 384360-web-02 35.153.57.148:80
+frontend www-https
+    bind   0.0.0.0:443 ssl ctr etc/letsencrypt/live/www.jenny.janviave.tech/fullchain.pem
+    http-request add-header X-Forwared-Proto https
+    acl     letsencrypt-acl path_beg /.well-known/acme-challenge/
+    use_backend  letsencrypt-backend if letsencrypt-acl
+    default_backend  www-backend
+
+backend www-backend
+    balance  roumdrobin
+    redirect scheme https if !{ ssl_fc }
+    server 384360-web-01 107.22.142.201:80
+    server 384360-web-02 35.153.57.148:80
+
+backend letsenceypt-backend
+   server letsencrypt  127.0.0.1:54321
