@@ -31,14 +31,14 @@ frontend www-http
     default_backend www-backend
 
 frontend www-https
-    bind   0.0.0.0:443 ssl ctr etc/letsencrypt/live/www.jenny.janviave.tech/fullchain.pem
+    bind   0.0.0.0:443 ssl crt etc/letsencrypt/live/www.jenny.janviave.tech/fullchain.pem
     http-request add-header X-Forwared-Proto https
     acl     letsencrypt-acl path_beg /.well-known/acme-challenge/
     use_backend  letsencrypt-backend if letsencrypt-acl
     default_backend  www-backend
 
 backend www-backend
-    balance  roumdrobin
+    balance  roundrobin
     redirect scheme https if !{ ssl_fc }
     server 384360-web-01 107.22.142.201:80
     server 384360-web-02 35.153.57.148:80
