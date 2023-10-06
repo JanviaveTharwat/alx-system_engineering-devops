@@ -12,6 +12,7 @@ printf %s "global
     maxconn 2000
     user haproxy
     group haproxy
+
 defaults
     log     global
     mode    http
