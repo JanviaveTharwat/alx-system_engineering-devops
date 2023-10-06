@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 #Installs and configures HAproxy in a load balancer server
 
-apt-get install -y software-properties-common
-add-apt-repository -y ppa:vbernat/haproxy-1.8
-apt-get update
-apt-get install -y haproxy=1.8.\*
+sudo apt-get install -y haproxy
 
 echo "ENABLED=1" >> /etc/default/haproxy
 mv /etc/haproxy/haproxy.cfg{,.original}
@@ -23,18 +20,27 @@ defaults
     retries 3
     option redispatch
     timeout connect  5000
-    timeout client  10000
-    timeout server  10000
-listen hbnb
-    bind 0.0.0.0:80
-    mode http
-    stats enable
-    stats uri /haproxy?stats
+    timeout client  30000
+    timeout server  30000
+    errorfile 400 /etc/haproxy/errors/400.http
+    errorfile 403 /etc/haproxy/errors/403.http
+    errorfile 408 /etc/haproxy/errors/408.http
+    errorfile 500 /etc/haproxy/errors/500.http
+    errorfile 502 /etc/haproxy/errors/502.http
+    errorfile 503 /etc/haproxy/errors/503.http
+    errorfile 504 /etc/haproxy/errors/504.http
+
+frontend http-in
+    timeout client  30000
+    bin  0:80
+    default_backend servers
+
+backend servers
+    timeout conect     3000
+    timeout server    30000
     balance roundrobin
-    option httpclose
-    option forwardfor
     server 384360-web-01 107.22.142.201:80 check
     server 384360-web-02 384360-web-02:80 check
 " >> /etc/haproxy/haproxy.cfg
 
-service haproxy start
+# service haproxy start
