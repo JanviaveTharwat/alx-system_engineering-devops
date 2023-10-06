@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Installs and configures HAproxy in a load balancer server
+# Installs and configures HAproxy in a load balancer server
 
 sudo apt-get install -y haproxy
 
@@ -33,7 +33,7 @@ defaults
 
 frontend http-in
     timeout client  30000
-    bin  0:80
+    bind  0:80
     default_backend servers
 
 backend servers
