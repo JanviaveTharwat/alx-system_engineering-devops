@@ -44,4 +44,4 @@ backend servers
     server 384360-web-02 35.153.57.148 check port 8080
 " >> /etc/haproxy/haproxy.cfg
 
-sudo systemctl restart haproxy.service
+sudo service haproxy start
