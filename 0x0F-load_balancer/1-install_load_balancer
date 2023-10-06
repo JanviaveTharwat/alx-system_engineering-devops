@@ -20,7 +20,7 @@ defaults
     option  dontlognull
     retries 3
     option redispatch
-    timeout connect  5000
+    timeout connect  3000
     timeout client  30000
     timeout server  30000
     errorfile 400 /etc/haproxy/errors/400.http
