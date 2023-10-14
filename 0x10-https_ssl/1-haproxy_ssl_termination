@@ -36,7 +36,7 @@ defaults
 
 frontend http_front
 	bind *:80
-	reqadd X-Forwarded-Proto:\ http
+	http-request set-header X-Forwarded-Proto httpshttp-request set-header X-Forwarded-Proto https
 	# if configuration for certbot pass to certbot backend
 	acl letsencrypt-acl path_beg /.well-known/acme-challenge/
 	use_backend le-certbot-backend if letsencrypt-acl
