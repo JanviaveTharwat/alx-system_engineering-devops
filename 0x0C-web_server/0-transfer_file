@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
-# Transfer file to server
-PATH_TO_FILE=$1
-IP=$2
-USERNAME=$3
-PATH_TO_SSH_KEY=$4
+# Transfers a file from our client to a server
+#
+# variables
+path="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+filename=$(basename "$BASH_SOURCE")
+file="$1"
+ip="$2"
+user="ubuntu"
+key="~/.ssh/school"
 
-if [ "$#" -lt 3 ]
-then
-	echo "Usage: 0-transfer_file PATH_TO_FILE IP USERNAME PATH_TO_SSH_KEY"
+if [ $# -eq 2 ]; then
+        scp -i "$key" -o StrictHostKeyChecking=no "$path"/"$file" "$user"@"$ip":/home/"$user"/
 else
-	sed -i '$ a \    StrictHostKeyChecking no' /etc/ssh/ssh_config
-	scp -i "$PATH_TO_SSH_KEY" "$PATH_TO_FILE" "$USERNAME"@"$IP":~/
+        echo -e "Usage: $filename PATH_TO_FILE IP USERNAME PATH_TO_SSH_KEY"
 fi
