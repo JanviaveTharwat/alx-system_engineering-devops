@@ -17,9 +17,9 @@ server {
         proxy_pass http://127.0.0.1:5001/number_odd_or_even/$1;
     }
 
-    # serve AierBnB_Clone_v3 API
+    # Serve AirBnB_clone_v3 API
     location /api {
-        proxy_pass https://127.0.0.1:5002/api;
+        proxy_pass http://127.0.0.1:5002/api;
     }
 
     # 404 error page
